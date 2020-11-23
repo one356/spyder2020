@@ -22,7 +22,7 @@ if __name__ == '__main__':
                }
     response = requests.get(url=url,headers=headers,params=param)
     list_data = response.json()
-    fp = open('./movice.json','w',encoding='utf-8')
+    fp = open('./movie.json','w',encoding='utf-8')
     # 转换成字典
     json.dump(list_data,fp=fp,ensure_ascii=False)
     print('完成')
