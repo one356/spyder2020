@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 """
     @author:Administrator
-    @file:20201123.py
+    @file:20201123-demo.py
     @time:2020/11/23
 """
 # 抓取豆瓣电影
