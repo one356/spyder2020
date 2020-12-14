@@ -44,3 +44,31 @@ if __name__ == '__main__':
     fun4(a = 10)
     fun4(a = 20,b = 30,c = 40)
 
+    # 定义全局变量
+    def fun5():
+        global age
+        age = 20
+        print(age)
+    fun5()
+    print(age)
+    
+    # 递归函数
+    
+    def fac(n):
+        if n==1:
+            return 1
+        else:
+            res = n*fac(n-1)
+            return res
+    print(fac(6))
+    # 递归实例：斐波那契数列
+    def fun6(n):
+        if n==1:
+            return 1
+        elif n==2:
+            return 1
+        else:
+            return fun6(n-1)+fun6(n-2)
+    for i in range(1,7):
+        print('i:%i' % i,fun6(i))
+            
