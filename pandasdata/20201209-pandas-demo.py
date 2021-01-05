@@ -7,8 +7,3 @@
 """
 # pandas demo
 import pandas as pd
-
-fpath = "./a.csv"
-ratings = pd.read_csv(fpath)
-ratings.head()
-ratings.shape

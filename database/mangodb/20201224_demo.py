@@ -9,6 +9,7 @@ from pymongo import MongoClient
 import requests
 import datetime
 from bs4 import BeautifulSoup
+import pandas as pd
 
 # 数据库实例
 class QhMongoDB:
@@ -24,9 +25,10 @@ class QhMongoDB:
         # item_list =
 
 
-# day_time = datetime.date.today()    #获取今天日期
 
-day_time = "2020-12-30"    #获取今天日期
+# day_time = datetime.date.today()    #获取今天日期
+day_time = '2021-01-04'
+
 # 爬虫头信息
 header = {
             "User - Agent": "Mozilla / 5.0(Windows NT 10.0;WOW64) AppleWebKit / 537.36(KHTML, likeGecko) Chrome / 87.0.4280.66Safari / 537.36"
@@ -42,26 +44,42 @@ class SpyderData:
             print("已经链接！")
         else:
             print("没有访问到数据")
+
         soup = BeautifulSoup(self.spyder_data_all_response,'lxml')  # 解析抓取的数据
         # 获取表格中数据
         tables = soup.find_all('table')
-        tab = tables[0]
-        title_tr = soup.find_all('tr')[2]   # 定位标题名tr位置
-        title_list = []
-        for td in title_tr.find_all('td'):
-            title_list.append(td.getText())
-        print('标题列表：',title_list)
-        i = 3
-        for tr in tab.find_all('tr'):
-            try:
-                data_tr = soup.find_all('tr')[i]   # 定位数据tr位置
-            except IndexError:
-                continue
-            data_list = []
-            for td in data_tr.find_all('td'):
-                data_list.append(td.getText())
-            print('数据列表：',data_list)
-            i += 1
+        try:
+            tab = tables[0]
+            title_tr = soup.find_all('tr')[2]   # 定位标题名tr位置
+            title_list = []
+            for td in title_tr.find_all('td'):
+                title_list.append(td.getText())
+            # 写标题到文件
+            with open(r'永安data%s.txt'%day_time,'a+',encoding='utf-8') as f:
+                for kind in title_list:
+                    f.write(str(kind)+',')
+                f.write('\n')
+            i = 3
+            for tr in tab.find_all('tr'):
+                try:
+                    data_tr = soup.find_all('tr')[i]   # 定位数据tr位置
+                except IndexError:
+                    continue
+                data_list = []
+                for td in data_tr.find_all('td'):
+                    data_list.append(td.getText())
+                # 写入具体数据到文件
+                with open(r'永安data%s.txt'%day_time, 'a+', encoding='utf-8') as f:
+                    for data in data_list:
+                        f.write(str(data)+',')
+                    f.write('\n')
+                i += 1
+        except IndexError:
+            print('没有可用数据')
+
+    def spyder_data_all_judge(self):
+        data_all_read = pd.read_csv('永安data%s.txt'%day_time)
+        print(data_all_read)
 
     def spyder_data_build(self,kind):
         self.url = "http://service.99qh.com/hold2/BuildHold/GetTableHtml.aspx?date=%s&mem=521&agree=%s" % (day_time,kind)
@@ -69,7 +87,9 @@ class SpyderData:
         print(self.spyder_data_all_response)
 
 if __name__ == '__main__':
+
     data_all=SpyderData()   # 实例化对象
     data_all.spyder_data_all()  # 调用方法返回全部持仓数据
+    data_all.spyder_data_all_judge()
     # kind = input("请输入期货代码（如：c2105）:")
     # data_all.spyder_data_build(kind)
